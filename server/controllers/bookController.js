@@ -20,17 +20,12 @@ const addBook = async (req, res) => {  //book add krne k liye  // Api- http://lo
   }
 };
 
-const getBooks = async (req, res) => {  //saare books k liye APi - http://localhost:5000/api/books
+const getBooks = async (req, res) => {
   try {
-    const books = await Book.find({
-      isDeleted: false,
-    });
-
-    res.status(200).json(books);
+    const books = await Book.find({ isDeleted: false });
+    res.status(200).json({ books, totalBooks: books.length, totalPages: 1 });
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -55,11 +50,11 @@ const getBookById = async (req, res) => {  //book id se access krne k liye  API 
   }
 };
 
-const searchBooks = async (req, res) => {  //book search krne k liye API - http://localhost:5000/api/books/search?keyword=ends
+const searchBooks = async (req, res) => {
   try {
-    const keyword = req.query.keyword;
-
+    const keyword = req.query.keyword || "";
     const books = await Book.find({
+      isDeleted: false,
       $or: [
         { title: { $regex: keyword, $options: "i" } },
         { author: { $regex: keyword, $options: "i" } },
@@ -67,14 +62,51 @@ const searchBooks = async (req, res) => {  //book search krne k liye API - http:
         { isbn: { $regex: keyword, $options: "i" } }
       ]
     });
-
-    res.status(200).json(books);
+    res.status(200).json({ books, totalBooks: books.length, totalPages: 1 });
   } catch (error) {
-    res.status(500).json({
-      message: error.message
-    });
+    res.status(500).json({ message: error.message });
   }
 };
+
+const getBooksPaginated = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const totalBooks = await Book.countDocuments({ isDeleted: false });
+    const books = await Book.find({ isDeleted: false }).skip(skip).limit(limit);
+    res.status(200).json({ books, totalBooks, totalPages: Math.ceil(totalBooks / limit) });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getBooksFiltered = async (req, res) => {
+  try {
+    const category = req.query.category;
+    const query = { isDeleted: false };
+    if (category && category !== "All") query.category = category;
+    const books = await Book.find(query);
+    res.status(200).json({ books, totalBooks: books.length, totalPages: 1 });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getBooksSorted = async (req, res) => {
+  try {
+    const sortBy = req.query.sortBy || "createdAt";
+    const order = req.query.order === "asc" ? 1 : -1;
+    const sortParams = {};
+    sortParams[sortBy] = order;
+    
+    const books = await Book.find({ isDeleted: false }).sort(sortParams);
+    res.status(200).json({ books, totalBooks: books.length, totalPages: 1 });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 
 const updateBook = async (req, res) => {  //changes update krne k liye
   try {
@@ -148,16 +180,16 @@ const borrowBook = async (req, res) => {  //book borrow krne k liye  Api - http:
       });
     }
 
-    const unpaidFine = await Borrow.findOne({
+    const unpaidFinesCount = await Borrow.countDocuments({
       user: req.user.id,
       fine: { $gt: 0 },
       finePaid: false,
     });
 
-    if (unpaidFine) {
+    if (unpaidFinesCount >= 2) {
       return res.status(403).json({
         message:
-          "Please pay your pending fine before borrowing new books.",
+          "You have 2 or more unpaid fines. Please pay them before borrowing new books.",
       });
     }
 
@@ -230,17 +262,18 @@ const returnBook = async (req, res) => {  //book return krne k liye Api - http:/
       });
     }
 
-    const book = await Book.findById(borrow.book);
+    if (borrow.status === "Return Requested") {
+      return res.status(400).json({
+        message: "Return request already submitted",
+      });
+    }
 
-    borrow.returned = true;
-    borrow.returnedHandledBy = req.user.id;
+    borrow.status = "Return Requested";
     await borrow.save();
 
-    book.availableCopies += 1;
-    await book.save();
-
     res.status(200).json({
-      message: "Book returned successfully",
+      message: "Return request submitted successfully",
+      borrow,
     });
   } catch (error) {
     res.status(500).json({
@@ -438,4 +471,7 @@ module.exports = {
   markBookLost,
   payReplacementCost,
   payFine,
+  getBooksPaginated,
+  getBooksFiltered,
+  getBooksSorted
 };

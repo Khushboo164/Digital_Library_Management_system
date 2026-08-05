@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
 
     password: {
       type: String,
@@ -58,7 +62,18 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-
+    phone: {
+      type: String,
+      default: "",
+    },
+    profilePicture: {
+      type: String,
+      default: "",
+    },
+    preferences: {
+      darkMode: { type: Boolean, default: false },
+      emailNotifications: { type: Boolean, default: true },
+    },
   },
   {
     timestamps: true, //khudi bata dega ki last add or update kab kiya h

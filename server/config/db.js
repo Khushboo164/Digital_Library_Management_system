@@ -1,17 +1,14 @@
-const mongoose = require("mongoose");//mongoose package import krne k liye
-//mongoose help krta h mongodb or server ko conncet krne m
+const mongoose = require("mongoose");
+const dns = require('dns');
+
+dns.setServers(['8.8.8.8', '8.8.4.4']); // yeh google ka dns server hai, instead system ka default dns
+
 const connectDB = async () => {
   try {
-    // const conn = await mongoose.connect(process.env.MONGODB_URI);
-
-    // console.log(`MongoDB Connected: ${conn.connection.host}`);
     const conn = await mongoose.connect(process.env.MONGODB_URI);
-
-   console.log("Host:", conn.connection.host);
-   console.log("Database:", conn.connection.name);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error("Database Connection Failed");
-    console.error(error.message);
+    console.error(`Error: ${error.message}`);
     process.exit(1);
   }
 };

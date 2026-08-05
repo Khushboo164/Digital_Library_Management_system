@@ -2,6 +2,9 @@ const jwt = require("jsonwebtoken");
 
 const protect = async (req, res, next) => {
   try {
+
+    console.log(req.headers);
+console.log(req.headers.authorization);
     let token;
 
     // Check Authorization Header

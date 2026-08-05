@@ -14,16 +14,29 @@ const borrowSchema = mongoose.Schema(
     },
     borrowDate: {
       type: Date,
-      default: Date.now,
     },
     dueDate: {
       type: Date,
-      required: true,
     },
     returned: {
       type: Boolean,
       default: false,
     },
+    status: {
+      type: String,
+      enum: ["Borrow Requested", "Borrow Approved", "Borrow Rejected", "Borrowed", "Return Requested", "Return Approved", "Return Rejected", "Returned", "Lost"],
+      default: "Borrow Requested",
+    },
+    requestDate: {
+      type: Date,
+      default: Date.now,
+    },
+    approvalDate: { type: Date },
+    issueDate: { type: Date },
+    returnRequestDate: { type: Date },
+    returnApprovalDate: { type: Date },
+    returnReceiveDate: { type: Date },
+    rejectionReason: { type: String },
     fine: {
       type: Number,
       default: 0,
@@ -40,6 +53,11 @@ const borrowSchema = mongoose.Schema(
 
 
     isLost: {
+      type: Boolean,
+      default: false,
+    },
+
+    isFound: {
       type: Boolean,
       default: false,
     },
@@ -62,6 +80,18 @@ const borrowSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    approvedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    rejectedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    returnApprovedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
 
     returnedHandledBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -78,6 +108,24 @@ const borrowSchema = mongoose.Schema(
       ref: "User",
     },
 
+    renewalCount: {
+      type: Number,
+      default: 0,
+    },
+
+    lostReported: {
+      type: Boolean,
+      default: false,
+    },
+    lostReportedDate: {
+      type: Date,
+    },
+
+    lostRequestStatus: {
+      type: String,
+      enum: ["Pending", "Approved", "Rejected"],
+      default: "Pending",
+    },
 
   },
   {

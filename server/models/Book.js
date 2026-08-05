@@ -37,6 +37,14 @@ const bookSchema = mongoose.Schema(
       type: String,
       default: "English",
     },
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
+    ratingCount: {
+      type: Number,
+      default: 0,
+    },
     totalCopies: {
       type: Number,
       default: 1,
@@ -64,10 +72,29 @@ const bookSchema = mongoose.Schema(
     deletedDate: {
       type: Date,
     },
+
+    editedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
+    editedDate: {
+      type: Date,
+    },
+
+    restoredBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
+    restoredDate: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("Book", bookSchema);
+module.exports =
+  mongoose.models.Book || mongoose.model("Book", bookSchema);
