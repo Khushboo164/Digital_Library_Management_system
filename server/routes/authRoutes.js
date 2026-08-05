@@ -1,6 +1,7 @@
 const express = require("express"); //isiliye kyuki iske bina hum expresss.router() k functions use nhi krr paate is file m
 
 const {
+  sendOtp,
   registerUser,
   loginUser,
   getProfile,
@@ -14,6 +15,7 @@ const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+router.post("/send-otp", sendOtp);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/profile", protect, getProfile);

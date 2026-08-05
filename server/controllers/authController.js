@@ -1,6 +1,33 @@
 const User = require("../models/User");//gets user model
+const Otp = require("../models/Otp");
+const { sendEmail } = require("../utils/sendEmail");
 const bcrypt = require("bcryptjs");//yeh library hai joh paswords ko hash code m convert krti h
 const jwt = require("jsonwebtoken");
+
+const sendOtp = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: "User already exists with this email" });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    await Otp.deleteMany({ email });
+    await Otp.create({ email, otp });
+
+    await sendEmail(email, otp);
+
+    res.status(200).json({ message: "OTP sent successfully to your email!" });
+  } catch (error) {
+    res.status(500).json({ message: error.message || "Failed to send OTP" });
+  }
+};
 
 const registerUser = async (req, res) => {
   try {
@@ -10,15 +37,23 @@ const registerUser = async (req, res) => {
       password,
       role,
       secretCode,
-    } = req.body; //yeh data req.body m store krne k liye // frpm express
+      otp,
+    } = req.body;
 
-    const userExists = await User.findOne({ email }); //email dhundega user model mese
+    const userExists = await User.findOne({ email });
 
     if (userExists) {
       return res.status(400).json({
-        //400-bad req k liye
         message: "User already exists",
-      }); //message return karega json form m
+      });
+    }
+
+    if (otp) {
+      const validOtp = await Otp.findOne({ email, otp });
+      if (!validOtp) {
+        return res.status(400).json({ message: "Invalid or expired OTP" });
+      }
+      await Otp.deleteMany({ email });
     }
 
     let finalRole = "member";
@@ -222,6 +257,7 @@ const unblockUser = async (req, res) => {  //http://localhost:5000/api/auth/unbl
 };
 
 module.exports = {
+  sendOtp,
   registerUser,
   loginUser,
   getProfile,
