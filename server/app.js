@@ -12,9 +12,17 @@ const librarianRoutes = require("./routes/librarianRoutes");
 const app = express(); //express application/server create krne k liye
 
 app.use(cors()); // Allow cross-origin requests from the frontend
-connectDB();//yaha hume db.js k connectdb function ko call kiya hai
 
-// Removed importBooks script from startup
+// Middleware to ensure DB connection per serverless request
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error("DB Connection Middleware Error:", error);
+    res.status(500).json({ message: "Database Connection Failed: " + error.message });
+  }
+});
 
 app.use(express.json()); // ek middleware joh frontend se aaye hue data ko json k form m conert kare
 
