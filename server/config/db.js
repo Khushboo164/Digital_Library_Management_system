@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const dns = require('dns');
 
-dns.setServers(['8.8.8.8', '8.8.4.4']); // yeh google ka dns server hai, instead system ka default dns
 
 const connectDB = async () => {
   try {
