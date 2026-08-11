@@ -1,9 +1,5 @@
 # 📚 BookSphere - Digital Library Management System
 
-![Live Demo](https://img.shields.io/badge/Live_Demo-Available-success?style=for-the-badge&logo=github)
-![MERN Stack](https://img.shields.io/badge/MERN_Stack-Powered-blue?style=for-the-badge&logo=react)
-![API](https://img.shields.io/badge/API-Brevo_Integrated-orange?style=for-the-badge)
-
 **BookSphere** is a premium, full-stack Digital Library Management System built with the MERN stack (MongoDB, Express, React, Node.js). It streamlines library operations, book borrowing, fine management, and role-based access for Admins, Librarians, and Members through a modern, fully responsive UI.
 
 🌐 **Live Demo:** [khushboo164.github.io/Digital_Library_Management_system](https://khushboo164.github.io/Digital_Library_Management_system/)
