@@ -66,7 +66,7 @@ const sendCustomEmail = async (email, subject, htmlContent, senderName = "Admin"
       "https://api.brevo.com/v3/smtp/email",
       {
         sender: {
-          name: \`BookSphere \${senderName}\`,
+          name: `BookSphere ${senderName}`,
           email: process.env.EMAIL_USER || "teambooksphere@gmail.com",
         },
         to: [{ email: email }],
