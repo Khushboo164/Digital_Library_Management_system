@@ -36,28 +36,8 @@ const sendEmail = async (email, otp) => {
     await transporter.sendMail(mailOptions);
     console.log("OTP email sent successfully via Gmail");
   } catch (error) {
-    console.warn("Gmail authentication failed (likely needs App Password). Falling back to Ethereal Email for testing...");
-    
-    // Fallback to ethereal for developer testing
-    const testAccount = await nodemailer.createTestAccount();
-    const fallbackTransporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false,
-      auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
-      },
-    });
-
-    mailOptions.from = '"BookSphere Test" <test@booksphere.com>';
-    const info = await fallbackTransporter.sendMail(mailOptions);
-    
-    console.log("=========================================");
-    console.log("OTP Email sent via Fake SMTP (Ethereal)");
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-    console.log("OTP CODE IS:", otp);
-    console.log("=========================================");
+    console.warn("Gmail authentication failed (likely needs App Password). Error:", error.message);
+    throw error;
   }
 };
 
@@ -80,27 +60,8 @@ const sendCustomEmail = async (email, subject, htmlContent, senderName = "Admin"
     await transporter.sendMail(mailOptions);
     console.log("Custom email sent successfully via Gmail");
   } catch (error) {
-    console.warn("Gmail authentication failed (likely needs App Password). Falling back to Ethereal Email for testing...");
-    
-    // Fallback to ethereal for developer testing
-    const testAccount = await nodemailer.createTestAccount();
-    const fallbackTransporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false,
-      auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
-      },
-    });
-
-    mailOptions.from = '"BookSphere Test" <test@booksphere.com>';
-    const info = await fallbackTransporter.sendMail(mailOptions);
-    
-    console.log("=========================================");
-    console.log("Custom Email sent via Fake SMTP (Ethereal)");
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-    console.log("=========================================");
+    console.warn("Gmail authentication failed (likely needs App Password). Error:", error.message);
+    throw error;
   }
 };
 
