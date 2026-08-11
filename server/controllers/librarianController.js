@@ -685,6 +685,8 @@ const getAllMembers = async (req, res) => {
   } catch (error) { res.status(500).json({ message: error.message }); }
 };
 
+const { sendCustomEmail } = require("../utils/sendEmail");
+
 const sendMemberEmailLibrarian = async (req, res) => {
   try {
     const EmailHistory = require("../models/EmailHistory");
@@ -694,6 +696,9 @@ const sendMemberEmailLibrarian = async (req, res) => {
     const mId = memberId || null;
     const mName = memberName || "Unknown";
     
+    // Actually send the email via the Brevo API
+    await sendCustomEmail(email, subject, message, req.user.role === 'admin' ? 'Admin' : 'Librarian');
+
     await EmailHistory.create({ 
       memberId: mId,
       memberName: mName,
@@ -703,7 +708,7 @@ const sendMemberEmailLibrarian = async (req, res) => {
       sentBy: req.user.id,
       senderRole: req.user.role || "Librarian/Admin"
     });
-    res.status(200).json({ message: "Email sent" });
+    res.status(200).json({ message: "Email sent successfully" });
   } catch (error) { 
     console.error(error);
     res.status(500).json({ message: error.message }); 
