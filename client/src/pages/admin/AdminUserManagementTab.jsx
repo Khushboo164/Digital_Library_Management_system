@@ -472,8 +472,8 @@ const AdminUserManagementTab = () => {
       {emailModalVisible && createPortal(
         <div style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
-          background: 'rgba(0,0,0,0.5)', zIndex: 1000, 
-          display: 'flex', alignItems: 'center', justifyContent: 'center'
+          background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)', zIndex: 99999, 
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem'
         }}>
           <div className="panel animate-fade-in-up" style={{ width: '90%', maxWidth: '600px', padding: '2rem', position: 'relative' }}>
             <button 
