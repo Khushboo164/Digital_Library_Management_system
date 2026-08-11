@@ -32,6 +32,9 @@ const sendEmail = async (email, otp) => {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      connectionTimeout: 5000, // 5 seconds
+      greetingTimeout: 5000,
+      socketTimeout: 5000,
     });
     await transporter.sendMail(mailOptions);
     console.log("OTP email sent successfully via Gmail");
@@ -56,6 +59,9 @@ const sendCustomEmail = async (email, subject, htmlContent, senderName = "Admin"
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      connectionTimeout: 5000,
+      greetingTimeout: 5000,
+      socketTimeout: 5000,
     });
     await transporter.sendMail(mailOptions);
     console.log("Custom email sent successfully via Gmail");
