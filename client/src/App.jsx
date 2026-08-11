@@ -6,9 +6,7 @@ import MemberDashboard from "./pages/member/MemberDashboard";
 import LibrarianDashboard from "./pages/librarian/LibrarianDashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import React from "react";
-
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -34,13 +32,11 @@ class ErrorBoundary extends React.Component {
     return this.props.children;
   }
 }
-
 import AdminDashboard from "./pages/admin/AdminDashboard";
-
 function App() {
   return (
     <ErrorBoundary>
-    <BrowserRouter>
+    <BrowserRouter basename="/Digital_Library_Management_system">
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
@@ -65,5 +61,4 @@ function App() {
     </ErrorBoundary>
   );
 }
-
 export default App;

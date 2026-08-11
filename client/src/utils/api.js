@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create an Axios instance
 const api = axios.create({
-  baseURL: import.meta.env.PROD ? "/api" : "http://localhost:5000/api",
+  baseURL: import.meta.env.PROD ? "https://digital-library-management-system-ui7w.onrender.com/api" : "http://localhost:5000/api",
   headers: {
     "Content-Type": "application/json",
   },

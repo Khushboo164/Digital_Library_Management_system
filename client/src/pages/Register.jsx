@@ -274,6 +274,9 @@ const Register = () => {
                           maxLength="6"
                         />
                     </div>
+                    <div style={{ marginTop: '10px', fontSize: '13px', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '5px', backgroundColor: 'var(--primary-light)', padding: '10px 12px', borderRadius: '6px' }}>
+                      <strong>💡 Demo Mode:</strong> Use code <strong>123456</strong> to verify instantly.
+                    </div>
                   </div>
                   
                   <div className="otp-actions">
